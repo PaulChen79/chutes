@@ -466,8 +466,14 @@ describe("chutes scan", () => {
     expect(await scanWith(`${replayJudge}coverage:\n  source: none\n`)).not.toBe(baseline);
     expect(await scanWith(`${replayJudge}state:\n  context_lines: 8\n`)).not.toBe(baseline);
 
-    // Transport and presentation change nothing about the judgement.
+    // The model that answers is part of how the judgement was reached, so a
+    // new model version voids a calibration gathered under the old one.
+    expect(await scanWith("judge:\n  backend: replay\n  model: systemone-v2\n")).not.toBe(baseline);
+
+    // Transport, pricing and presentation change nothing about the judgement.
     expect(await scanWith("judge:\n  backend: replay\n  concurrency: 4\n")).toBe(baseline);
+    expect(await scanWith("judge:\n  backend: replay\n  timeout_ms: 5000\n")).toBe(baseline);
+    expect(await scanWith("judge:\n  backend: replay\n  price_per_mtok: 0.09\n")).toBe(baseline);
     expect(await scanWith(`${replayJudge}report:\n  max_files_per_lane: 9\n`)).toBe(baseline);
   });
 

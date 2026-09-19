@@ -37,8 +37,24 @@ const NOT_PART_OF_A_JUDGEMENT = new Set([
   "rescan",
 ]);
 
-/** Transport settings: how a request is made, not what is asked or decided. */
-const JUDGE_TRANSPORT = new Set(["concurrency", "timeout_ms", "max_retries", "replay_path"]);
+/**
+ * Transport and bookkeeping: how a request is made and what it is expected
+ * to cost, never what is asked or how the answer is read.
+ *
+ * `base_url` belongs here because a proxy or a self-hosted deployment of the
+ * same model answers the same way; a genuinely different service is a
+ * different `backend` or `model`, and both of those are in the Fingerprint.
+ */
+const JUDGE_TRANSPORT = new Set([
+  "concurrency",
+  "timeout_ms",
+  "max_retries",
+  "replay_path",
+  "base_url",
+  "confirm_spend",
+  "price_per_mtok",
+  "rate_limit_rpm",
+]);
 
 export function configFingerprint(config: ChutesConfig, judge: Judge): string {
   const judged: Record<string, unknown> = {};

@@ -165,6 +165,22 @@ export const configSchema = z.strictObject({
 
   judge: section({
     backend: z.enum(["jev", "replay"]).default("jev"),
+    /** The Judge model. Part of the Config Fingerprint: a new version answers differently. */
+    model: nonEmpty.default("systemone"),
+    /** The API root. Configurable for a proxy or a self-hosted deployment. */
+    base_url: nonEmpty.default("https://api.typesafe.ai"),
+    /**
+     * Ask before spending anything.
+     *
+     * On by default, and the default is the point: a Detect Rule looser
+     * than intended, or a Migration pointed at the wrong directory, should
+     * cost nothing to discover.
+     */
+    confirm_spend: z.boolean().default(true),
+    /** USD per million input tokens, for the estimate shown before spending. */
+    price_per_mtok: z.number().nonnegative().default(0.042),
+    /** Requests per minute the account is allowed, for the duration estimate. */
+    rate_limit_rpm: positiveInt.default(1200),
     /** Where the replay backend reads its recorded answers from. */
     replay_path: nonEmpty.default("replay.json"),
     concurrency: positiveInt.default(16),

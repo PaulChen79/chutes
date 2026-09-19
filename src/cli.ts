@@ -61,11 +61,18 @@ program
   .option("-m, --migration <name>", "Migration name", DEFAULT_MIGRATION)
   .option("-f, --force", "Reclassify every file, ignoring status and content hash")
   .option("--print-state [path]", "Print what would be sent to the Judge for one file, and stop")
+  .option("-y, --yes", "Skip the spend confirmation, for unattended runs")
   .action(
-    async (options: { migration: string; force?: boolean; printState?: string | boolean }) => {
+    async (options: {
+      migration: string;
+      force?: boolean;
+      yes?: boolean;
+      printState?: string | boolean;
+    }) => {
       await scanCommand(process.cwd(), {
         migration: options.migration,
         force: options.force,
+        yes: options.yes,
         printState: options.printState,
       });
     },

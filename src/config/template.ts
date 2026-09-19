@@ -150,6 +150,13 @@ questions:
 
 judge:
   backend: jev        # jev | replay
+  model: systemone
+  base_url: https://api.typesafe.ai
+  # Print the estimated cost and wait for confirmation before spending.
+  # On by default so a misconfigured run costs nothing to discover.
+  confirm_spend: true
+  price_per_mtok: 0.042     # USD per million INPUT tokens; output is not billed
+  rate_limit_rpm: 1200
   # Where the replay backend reads recorded answers from, relative to this file.
   replay_path: replay.json
   concurrency: 16

@@ -4,6 +4,9 @@ import { isAbsolute, join, relative } from "node:path";
 import { collect } from "../collect.js";
 import { loadConfig } from "../config/load.js";
 import type { ChutesConfig } from "../config/schema.js";
+import { confirm } from "../confirm.js";
+import { describeEstimate, estimate } from "../judge/cost.js";
+import { JevJudge } from "../judge/jev.js";
 import { ReplayJudge } from "../judge/replay.js";
 import type { Judge } from "../judge/types.js";
 import { migrationDir } from "../paths.js";
@@ -18,6 +21,8 @@ import { count } from "../text.js";
 
 export interface ScanOptions {
   migration: string;
+  /** Skip the spend confirmation, so an unattended run is not blocked on it. */
+  yes?: boolean;
   /** Reclassify every file, ignoring status and content hash. */
   force?: boolean;
   /**
@@ -48,10 +53,15 @@ async function openJudge(cwd: string, config: ChutesConfig, migration: string): 
       : join(migrationDir(cwd, migration), configured);
     return await ReplayJudge.load(cwd, path, configured);
   }
-  throw new Error(
-    `judge.backend "${config.judge.backend}" is not available in this release. ` +
-      'Set judge.backend to "replay" and supply a recording.',
-  );
+  // Credentials are checked here, before the repository is even read: a
+  // missing key discovered after four hundred files have been judged is a
+  // worse failure than the one it replaces.
+  return JevJudge.create(config);
+}
+
+/** Whether using this Judge costs money. The replay backend reads a file. */
+function spends(judge: Judge): boolean {
+  return judge.backend !== "replay";
 }
 
 /**
@@ -213,6 +223,24 @@ export async function scanCommand(cwd: string, options: ScanOptions): Promise<vo
   const toJudge = decisions.filter(isKind("judge")).map((d) => d.path);
   const reused = decisions.filter(isKind("reuse")).map((d) => d.record);
   const removed = decisions.filter(isKind("removed")).map((d) => d.record);
+
+  if (spends(judge) && toJudge.length > 0) {
+    const sizes = toJudge.map((path) => {
+      const matches = collection.matches.get(path);
+      const facts = collection.graph.facts.get(path);
+      const contents = collection.contents.get(path);
+      if (matches === undefined || facts === undefined || contents === undefined) return 0;
+      return JSON.stringify(assembleState(matches, facts, contents, config).state).length;
+    });
+    const forecast = estimate(sizes, config);
+    process.stdout.write(`${describeEstimate(forecast)}\n\n`);
+
+    if (config.judge.confirm_spend && options.yes !== true) {
+      if (!(await confirm("Proceed?"))) {
+        throw new Error("Cancelled. Nothing was sent and nothing was spent.");
+      }
+    }
+  }
 
   const judged = await mapWithConcurrency(
     toJudge,
