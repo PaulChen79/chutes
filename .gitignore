@@ -18,6 +18,5 @@ build/
 .DS_Store
 *.log
 
-# Docs are a local scratch area — only docs/agents/ is shared
-docs/*
-!docs/agents/
+# Docs are a local scratch area and are never published.
+docs/
