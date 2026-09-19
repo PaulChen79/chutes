@@ -1,7 +1,8 @@
+import { collect, type ReadFailure } from "../collect.js";
 import { loadConfig } from "../config/load.js";
-import type { ChutesConfig } from "../config/schema.js";
-import { discoverCandidates } from "../detect/discover.js";
-import { CONTEXT_LINES, type FileMatches, matchFiles, type ReadFailure } from "../detect/match.js";
+import type { ChutesConfig, CoverageSource } from "../config/schema.js";
+import { CONTEXT_LINES, type FileMatches } from "../detect/match.js";
+import type { FileFacts } from "../graph/facts.js";
 
 /** English pluralisation for the small set of nouns this report uses. */
 function count(n: number, singular: string, plural: string): string {
@@ -45,9 +46,56 @@ function renderTally(tallies: RuleTally[]): string {
     .join("\n");
 }
 
+const COVERAGE_LABEL = {
+  importgraph: "import graph",
+  report: "coverage report",
+  none: "coverage.source: none",
+} as const;
+
+/**
+ * The two coverage lines, labelled so they cannot appear to contradict.
+ *
+ * They can legitimately disagree: a coverage report says whether a file ran,
+ * the import graph says which tests reach it, and no mainstream report format
+ * records the latter. Printing both as "covered" would read as a bug, so when
+ * the report is the source the second line says what it actually is.
+ */
+function renderCoverage(facts: FileFacts, source: CoverageSource): string[] {
+  if (source === "none") {
+    return [`    covered: not computed (${COVERAGE_LABEL.none})`];
+  }
+  const tests = facts.coveredBy.length > 0 ? facts.coveredBy.join(", ") : "nothing";
+  return [
+    `    covered: ${facts.covered ? "yes" : "no"} (${COVERAGE_LABEL[source]})`,
+    source === "report" ? `    tests importing it: ${tests}` : `    covered by: ${tests}`,
+  ];
+}
+
+/** The facts code established about a file, which the Judge is never asked for. */
+function renderFacts(facts: FileFacts | undefined, source: CoverageSource): string[] {
+  if (!facts) return [];
+  // The count goes in the label, not after the list: trailing it would read as
+  // a note about the last specifier rather than about all of them.
+  const resolved = `(${facts.importsLocal} of ${facts.imports.length} in this repo)`;
+  return [
+    facts.imports.length > 0
+      ? `    imports ${resolved}: ${facts.imports.join(", ")}`
+      : "    imports: none",
+    `    exports: ${facts.exports.length > 0 ? facts.exports.join(", ") : "none"}`,
+    `    imported by: ${count(facts.importedBy, "file", "files")}`,
+    `    test: ${facts.isTest ? "yes" : "no"}`,
+    ...renderCoverage(facts, source),
+    "",
+  ];
+}
+
 /** Every Match in one file, with the surrounding source, gutter-numbered. */
-function renderFile(file: FileMatches): string {
-  const lines: string[] = [`  ${file.path}`];
+function renderFile(
+  file: FileMatches,
+  facts: FileFacts | undefined,
+  source: CoverageSource,
+): string {
+  const lines: string[] = [`  ${file.path}`, ...renderFacts(facts, source)];
   const shown = file.matches.slice(0, file.shown);
 
   for (const match of shown) {
@@ -75,10 +123,12 @@ function renderFile(file: FileMatches): string {
   return lines.join("\n");
 }
 
-function renderFailures(failures: ReadFailure[]): string[] {
+function renderFailures(failures: ReadFailure[], indexed: number): string[] {
   return [
     "",
-    `Could not read ${count(failures.length, "file", "files")}:`,
+    `Could not read ${count(failures.length, "file", "files")} of the ${indexed} indexed`,
+    "(indexed is wider than the counts above: it includes excluded files, which are",
+    "graph edges but never classified). An unreadable file contributes no edges.",
     "",
     ...failures.map((f) => `  ${f.path}: ${f.reason}`),
   ];
@@ -86,7 +136,8 @@ function renderFailures(failures: ReadFailure[]): string[] {
 
 export async function detectCommand(cwd: string, migration: string): Promise<void> {
   const config = await loadConfig(cwd, migration);
-  const candidates = await discoverCandidates(cwd, config);
+  const collected = await collect(cwd, config);
+  const { candidates } = collected;
 
   // No candidates means the globs are wrong, not the rules. Warning about the
   // rules here would point the user at the one thing that is not broken.
@@ -98,6 +149,7 @@ export async function detectCommand(cwd: string, migration: string): Promise<voi
         "No candidate files. The Detect Rules were not run.",
         "",
         `include: ${JSON.stringify(config.include)}`,
+        `ignore:  ${JSON.stringify(config.ignore)}`,
         `exclude: ${JSON.stringify(config.exclude)}`,
         "",
         "Check these globs before checking the rules.",
@@ -107,12 +159,13 @@ export async function detectCommand(cwd: string, migration: string): Promise<voi
     return;
   }
 
-  const { files, failures } = await matchFiles(cwd, candidates, config);
+  const files = candidates.flatMap((path) => collected.matches.get(path) ?? []);
   const matched = files.filter((f) => f.matches.length > 0);
+  const failures = collected.failures;
 
   const tallies = tallyByRule(config, files);
   const silent = tallies.filter((t) => t.matches === 0);
-  const read = candidates.length - failures.length;
+  const read = files.length;
 
   const out: string[] = [
     `Detect Rules for Migration "${migration}"`,
@@ -124,11 +177,27 @@ export async function detectCommand(cwd: string, migration: string): Promise<voi
   ];
 
   if (matched.length > 0) {
-    out.push("", "Matches", "", ...matched.map(renderFile));
+    out.push(
+      "",
+      "Matches",
+      "",
+      ...matched.map((file) =>
+        renderFile(file, collected.graph.facts.get(file.path), collected.graph.coverageSource),
+      ),
+    );
   }
 
   if (failures.length > 0) {
-    out.push(...renderFailures(failures));
+    out.push(...renderFailures(failures, collected.indexed.length));
+  }
+
+  if (collected.coverageFellBack !== undefined) {
+    out.push(
+      "",
+      `Note: coverage.source is "report" but ${collected.coverageFellBack} could not be read;`,
+      "falling back to the import graph. Generate the report, or set coverage.source",
+      "explicitly, so that coverage is not quietly approximate.",
+    );
   }
 
   if (silent.length > 0) {

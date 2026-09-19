@@ -7,6 +7,14 @@ const nonEmpty = z.string().min(1);
 const lane = z.enum(["mechanical", "judgment", "redesign"]);
 
 /**
+ * Where the `covered` fact comes from. `report` falls back to `importgraph`
+ * when no report can be read, so this is the configured source, not
+ * necessarily the one used -- `DependencyGraph.coverageSource` is the latter.
+ */
+export const coverageSourceSchema = z.enum(["importgraph", "report", "none"]);
+export type CoverageSource = z.infer<typeof coverageSourceSchema>;
+
+/**
  * A config section, tolerant of both an absent key and a `key:` with nothing
  * under it.
  *
@@ -41,7 +49,28 @@ const detectRule = z
 
 export const configSchema = z.strictObject({
   include: z.array(nonEmpty).min(1),
-  exclude: z.array(nonEmpty).default(["dist/**", "**/*.d.ts"]),
+
+  /**
+   * Not part of this codebase at all: never indexed, never classified, never
+   * an edge in the dependency graph.
+   *
+   * Distinct from `exclude`, and the distinction is load-bearing. Generated
+   * output is a *copy* of the source, so indexing it would double every
+   * `imported by` count and hand the Judge a fact that is simply wrong.
+   */
+  ignore: z
+    .array(nonEmpty)
+    .default(["dist/**", "build/**", "out/**", "coverage/**", "**/*.d.ts", "**/*.min.js"]),
+
+  /**
+   * Real code that is indexed into the dependency graph but never classified.
+   *
+   * Test files are the reason this is separate from `ignore`: excluding them
+   * is the ordinary thing to do, and if that also dropped them from the graph
+   * then every file's coverage would be permanently empty and nothing would
+   * look broken.
+   */
+  exclude: z.array(nonEmpty).default([]),
 
   detect: section({
     rules: z.array(detectRule).min(1),
@@ -61,8 +90,18 @@ export const configSchema = z.strictObject({
     });
   }),
 
+  graph: section({
+    // Build-tool aliases, so `@/store/cart` becomes a real edge rather than an
+    // unresolved specifier. chutes reads no bundler or tsconfig settings: an
+    // alias is one line here, and guessing wrong is worse than not guessing.
+    aliases: z.record(nonEmpty, nonEmpty).default({}),
+    extensions: z
+      .array(nonEmpty)
+      .default([".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".vue", ".json"]),
+  }),
+
   coverage: section({
-    source: z.enum(["importgraph", "report", "none"]).default("importgraph"),
+    source: coverageSourceSchema.default("importgraph"),
     report_path: nonEmpty.default("coverage/coverage-final.json"),
   }),
 

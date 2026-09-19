@@ -24,12 +24,26 @@ export function configTemplate(migration: string): string {
 include:
   - "src/**/*.{ts,tsx,js,jsx,vue}"
 
-# Files excluded from triage but STILL indexed into the dependency graph.
-# This distinction matters: excluding your tests here keeps them out of the
-# Plan while still letting chutes work out which tests cover which file.
-exclude:
+# Not part of this codebase at all: never indexed, never classified, and never
+# an edge in the dependency graph. Generated output belongs here rather than in
+# "exclude", because a build directory is a COPY of your source -- index it and
+# every file's "imported by" count is silently doubled.
+ignore:
   - "dist/**"
+  - "build/**"
+  - "out/**"
+  - "coverage/**"
   - "**/*.d.ts"
+  - "**/*.min.js"
+
+# Real code that IS indexed into the dependency graph but is never classified.
+# This is the one for your tests: it keeps them out of the Plan while still
+# letting chutes work out which tests cover which file. Exclude them via
+# "ignore" instead and every file's coverage is permanently empty.
+# The default is empty: chutes classifies your tests along with everything
+# else until you say otherwise. Uncomment to keep them out of the Plan.
+exclude: []
+#   - "**/*.{spec,test}.*"
 
 # ---------------------------------------------------------------------------
 # What counts as a Match
@@ -54,11 +68,24 @@ detect:
     - "**/*.{spec,test}.*"
     - "**/__tests__/**"
 
+# How an import specifier becomes an edge in the dependency graph. chutes reads
+# no bundler or tsconfig settings: state your aliases here, because guessing
+# them wrong is worse than not guessing.
+graph:
+  aliases: {}
+  #   "@": src
+  #   "~/components": src/components
+  extensions: [".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".vue", ".json"]
+
 coverage:
-  # Where "which tests cover this file" comes from.
-  #   importgraph -- tests that transitively import the file (approximate, free)
-  #   report      -- a coverage report, if you have one (accurate)
+  # Where "is this file covered" comes from.
+  #   importgraph -- covered if some test transitively imports it (free, approximate)
+  #   report      -- covered if a coverage report says it was executed (accurate)
   #   none        -- do not compute coverage
+  # No coverage format records WHICH test covered a file, so the list of
+  # covering tests always comes from the import graph. \`report\` only decides
+  # the yes/no. A configured report that is missing falls back to the graph and
+  # says so.
   source: importgraph
   report_path: coverage/coverage-final.json
 

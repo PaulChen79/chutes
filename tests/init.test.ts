@@ -46,6 +46,7 @@ describe("chutes init", () => {
   // by strict parsing in the "validates" test above.
   const EVERY_TUNABLE = [
     "include",
+    "ignore",
     "exclude",
     "detect.rules",
     "detect.max_matches_per_file",

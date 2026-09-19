@@ -1,5 +1,3 @@
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
 import type { ChutesConfig } from "../config/schema.js";
 
 /** One place a Detect Rule fired, with the surrounding source for context. */
@@ -25,17 +23,8 @@ export interface FileMatches {
   shown: number;
 }
 
-/** A candidate file that could not be read. */
-export interface ReadFailure {
-  path: string;
-  reason: string;
-}
-
 /** Lines of surrounding source shown either side of a matched line. */
 export const CONTEXT_LINES = 3;
-
-/** How many files to read at once. */
-const READ_CONCURRENCY = 32;
 
 /**
  * Split source into lines for matching.
@@ -54,12 +43,7 @@ export function splitLines(contents: string): string[] {
   return lines;
 }
 
-/** Run every Detect Rule over one file's contents. */
-export function matchContents(contents: string, config: ChutesConfig): Omit<FileMatches, "path"> {
-  return matchLines(splitLines(contents), compileRules(config), config.detect.max_matches_per_file);
-}
-
-interface CompiledRule {
+export interface CompiledRule {
   id: string;
   regex: RegExp;
 }
@@ -68,11 +52,11 @@ interface CompiledRule {
  * Compile each Detect Rule once per run rather than once per file. The
  * configuration is already validated, so these patterns are known to compile.
  */
-function compileRules(config: ChutesConfig): CompiledRule[] {
+export function compileRules(config: ChutesConfig): CompiledRule[] {
   return config.detect.rules.map((rule) => ({ id: rule.id, regex: new RegExp(rule.pattern) }));
 }
 
-function matchLines(
+export function matchLines(
   lines: string[],
   rules: CompiledRule[],
   max: number,
@@ -92,47 +76,4 @@ function matchLines(
   }
 
   return { matches: found, shown: Math.min(found.length, max) };
-}
-
-/**
- * Run every Detect Rule over every candidate file.
- *
- * A file that cannot be read is collected rather than thrown, so one
- * restricted file does not deny the user a read-only diagnostic they are meant
- * to re-run while iterating on patterns.
- */
-export async function matchFiles(
-  cwd: string,
-  paths: string[],
-  config: ChutesConfig,
-): Promise<{ files: FileMatches[]; failures: ReadFailure[] }> {
-  const rules = compileRules(config);
-  const max = config.detect.max_matches_per_file;
-  const files: FileMatches[] = [];
-  const failures: ReadFailure[] = [];
-
-  for (let start = 0; start < paths.length; start += READ_CONCURRENCY) {
-    const batch = paths.slice(start, start + READ_CONCURRENCY);
-    type ReadResult = { path: string; contents: string } | { path: string; reason: string };
-
-    const read = await Promise.all(
-      batch.map(async (path): Promise<ReadResult> => {
-        try {
-          return { path, contents: await readFile(join(cwd, path), "utf8") };
-        } catch (error) {
-          return { path, reason: error instanceof Error ? error.message : String(error) };
-        }
-      }),
-    );
-
-    for (const result of read) {
-      if ("contents" in result) {
-        files.push({ path: result.path, ...matchLines(splitLines(result.contents), rules, max) });
-      } else {
-        failures.push({ path: result.path, reason: result.reason });
-      }
-    }
-  }
-
-  return { files, failures };
 }

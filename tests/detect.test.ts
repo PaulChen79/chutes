@@ -1,34 +1,8 @@
-import { chmod, mkdir, writeFile } from "node:fs/promises";
-import { dirname, join } from "node:path";
+import { chmod } from "node:fs/promises";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { runCli, tempRepo } from "./helpers/cli.js";
-
-/** Write a Migration config with the given Detect Rules into a repo. */
-async function withRules(
-  repo: string,
-  rules: Array<{ id: string; pattern: string }>,
-  extra = "",
-): Promise<void> {
-  const body = rules.map((r) => `    - id: ${r.id}\n      pattern: '${r.pattern}'`).join("\n");
-  await mkdir(join(repo, ".chutes", "default"), { recursive: true });
-  await writeFile(
-    join(repo, ".chutes", "default", "migration.yml"),
-    `include: ["src/**"]\ncriteria: "Vue 2 to Vue 3"\ndetect:\n  rules:\n${body}\n${extra}`,
-  );
-}
-
-/** Write a raw Migration config into a repo. */
-async function withConfig(repo: string, yaml: string): Promise<void> {
-  await mkdir(join(repo, ".chutes", "default"), { recursive: true });
-  await writeFile(join(repo, ".chutes", "default", "migration.yml"), yaml);
-}
-
-/** Create a source file inside the repo. */
-async function file(repo: string, path: string, contents: string): Promise<void> {
-  const full = join(repo, path);
-  await mkdir(dirname(full), { recursive: true });
-  await writeFile(full, contents);
-}
+import { file, withConfig, withRules } from "./helpers/repo.js";
 
 describe("chutes detect --dry-run", () => {
   it("reports the files and Matches each Detect Rule hit", async () => {
