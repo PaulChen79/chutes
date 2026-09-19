@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "commander": "^14.0.1",
+    "tinyglobby": "^0.2.17",
     "yaml": "^2.8.1",
     "zod": "^4.1.12"
   },

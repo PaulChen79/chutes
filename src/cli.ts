@@ -1,5 +1,6 @@
 import { Command } from "commander";
 import { validateConfig } from "./commands/config.js";
+import { detectCommand } from "./commands/detect.js";
 import { init } from "./commands/init.js";
 import { DEFAULT_MIGRATION } from "./paths.js";
 import { version } from "./version.js";
@@ -27,6 +28,19 @@ config
   .option("-m, --migration <name>", "name of the Migration", DEFAULT_MIGRATION)
   .action(async (options: { migration: string }) => {
     await validateConfig(process.cwd(), options.migration);
+  });
+
+program
+  .command("detect")
+  .description("Show what the Detect Rules match, without contacting the Judge")
+  // detect is read-only in this release, so there is nothing to opt out of.
+  // The flag is accepted so documented invocations work, and so a future
+  // writing mode can be introduced by adding one rather than by flipping this
+  // default and changing what an existing command does.
+  .option("--dry-run", "Accepted for forward compatibility; detect never writes")
+  .option("-m, --migration <name>", "Migration name", DEFAULT_MIGRATION)
+  .action(async (options: { migration: string }) => {
+    await detectCommand(process.cwd(), options.migration);
   });
 
 program.parseAsync().catch((error: unknown) => {
