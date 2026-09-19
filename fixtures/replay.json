@@ -1,0 +1,257 @@
+{
+  "model": "fixture-recording-v1",
+  "answers": {
+    "src/AsyncBoundary.vue": {
+      "q1_direct_rewrite": 0.06,
+      "q2_custom_hack": 0.7,
+      "q3_public_api": 0.83,
+      "q4_lifecycle": 0.66,
+      "q5_design_effort": [0.03, 0.06, 0.13, 0.33, 0.45]
+    },
+    "src/Avatar.vue": {
+      "q1_direct_rewrite": 0.96,
+      "q2_custom_hack": 0.02,
+      "q3_public_api": 0.04,
+      "q4_lifecycle": 0.02,
+      "q5_design_effort": [0.8, 0.14, 0.04, 0.01, 0.01]
+    },
+    "src/Badge.vue": {
+      "q1_direct_rewrite": 0.97,
+      "q2_custom_hack": 0.02,
+      "q3_public_api": 0.03,
+      "q4_lifecycle": 0.02,
+      "q5_design_effort": [0.8, 0.14, 0.04, 0.01, 0.01]
+    },
+    "src/Breadcrumb.vue": {
+      "q1_direct_rewrite": 0.72,
+      "q2_custom_hack": 0.4,
+      "q3_public_api": 0.28,
+      "q4_lifecycle": 0.2,
+      "q5_design_effort": [0.35, 0.34, 0.2, 0.08, 0.03]
+    },
+    "src/Caption.vue": {
+      "q1_direct_rewrite": 0.98,
+      "q2_custom_hack": 0.01,
+      "q3_public_api": 0.01,
+      "q4_lifecycle": 0.01,
+      "q5_design_effort": [0.8, 0.14, 0.04, 0.01, 0.01]
+    },
+    "src/Carousel.vue": {
+      "q1_direct_rewrite": 0.45,
+      "q2_custom_hack": 0.5,
+      "q3_public_api": 0.26,
+      "q4_lifecycle": 0.44,
+      "q5_design_effort": [0.18, 0.3, 0.3, 0.16, 0.06]
+    },
+    "src/Chart.vue": {
+      "q1_direct_rewrite": 0.44,
+      "q2_custom_hack": 0.52,
+      "q3_public_api": 0.3,
+      "q4_lifecycle": 0.38,
+      "q5_design_effort": [0.18, 0.3, 0.3, 0.16, 0.06]
+    },
+    "src/Counter.vue": {
+      "q1_direct_rewrite": 0.96,
+      "q2_custom_hack": 0.03,
+      "q3_public_api": 0.03,
+      "q4_lifecycle": 0.02,
+      "q5_design_effort": [0.8, 0.14, 0.04, 0.01, 0.01]
+    },
+    "src/DataTable.vue": {
+      "q1_direct_rewrite": 0.48,
+      "q2_custom_hack": 0.55,
+      "q3_public_api": 0.3,
+      "q4_lifecycle": 0.2,
+      "q5_design_effort": [0.18, 0.3, 0.3, 0.16, 0.06]
+    },
+    "src/Divider.vue": {
+      "q1_direct_rewrite": 0.98,
+      "q2_custom_hack": 0.01,
+      "q3_public_api": 0.01,
+      "q4_lifecycle": 0.01,
+      "q5_design_effort": [0.8, 0.14, 0.04, 0.01, 0.01]
+    },
+    "src/Dropdown.vue": {
+      "q1_direct_rewrite": 0.58,
+      "q2_custom_hack": 0.4,
+      "q3_public_api": 0.2,
+      "q4_lifecycle": 0.35,
+      "q5_design_effort": [0.35, 0.34, 0.2, 0.08, 0.03]
+    },
+    "src/EventBus.js": {
+      "q1_direct_rewrite": 0.05,
+      "q2_custom_hack": 0.75,
+      "q3_public_api": 0.92,
+      "q4_lifecycle": 0.7,
+      "q5_design_effort": [0.03, 0.06, 0.13, 0.33, 0.45]
+    },
+    "src/FilterRegistry.js": {
+      "q1_direct_rewrite": 0.06,
+      "q2_custom_hack": 0.7,
+      "q3_public_api": 0.9,
+      "q4_lifecycle": 0.55,
+      "q5_design_effort": [0.03, 0.06, 0.13, 0.33, 0.45]
+    },
+    "src/FormField.vue": {
+      "q1_direct_rewrite": 0.52,
+      "q2_custom_hack": 0.48,
+      "q3_public_api": 0.34,
+      "q4_lifecycle": 0.18,
+      "q5_design_effort": [0.18, 0.3, 0.3, 0.16, 0.06]
+    },
+    "src/InfiniteList.vue": {
+      "q1_direct_rewrite": 0.6,
+      "q2_custom_hack": 0.35,
+      "q3_public_api": 0.24,
+      "q4_lifecycle": 0.25,
+      "q5_design_effort": [0.35, 0.34, 0.2, 0.08, 0.03]
+    },
+    "src/KeepAliveCache.vue": {
+      "q1_direct_rewrite": 0.14,
+      "q2_custom_hack": 0.66,
+      "q3_public_api": 0.58,
+      "q4_lifecycle": 0.64,
+      "q5_design_effort": [0.08, 0.14, 0.26, 0.3, 0.22]
+    },
+    "src/LegacyGrid.vue": {
+      "q1_direct_rewrite": 0.1,
+      "q2_custom_hack": 0.68,
+      "q3_public_api": 0.72,
+      "q4_lifecycle": 0.88,
+      "q5_design_effort": [0.03, 0.06, 0.13, 0.33, 0.45]
+    },
+    "src/Modal.vue": {
+      "q1_direct_rewrite": 0.4,
+      "q2_custom_hack": 0.58,
+      "q3_public_api": 0.28,
+      "q4_lifecycle": 0.46,
+      "q5_design_effort": [0.18, 0.3, 0.3, 0.16, 0.06]
+    },
+    "src/ObserveDirective.js": {
+      "q1_direct_rewrite": 0.09,
+      "q2_custom_hack": 0.66,
+      "q3_public_api": 0.84,
+      "q4_lifecycle": 0.78,
+      "q5_design_effort": [0.03, 0.06, 0.13, 0.33, 0.45]
+    },
+    "src/Price.vue": {
+      "q1_direct_rewrite": 0.97,
+      "q2_custom_hack": 0.02,
+      "q3_public_api": 0.02,
+      "q4_lifecycle": 0.01,
+      "q5_design_effort": [0.8, 0.14, 0.04, 0.01, 0.01]
+    },
+    "src/Progress.vue": {
+      "q1_direct_rewrite": 0.97,
+      "q2_custom_hack": 0.02,
+      "q3_public_api": 0.02,
+      "q4_lifecycle": 0.01,
+      "q5_design_effort": [0.8, 0.14, 0.04, 0.01, 0.01]
+    },
+    "src/PropSync.vue": {
+      "q1_direct_rewrite": 0.15,
+      "q2_custom_hack": 0.48,
+      "q3_public_api": 0.9,
+      "q4_lifecycle": 0.35,
+      "q5_design_effort": [0.05, 0.08, 0.15, 0.32, 0.4]
+    },
+    "src/RootMixin.js": {
+      "q1_direct_rewrite": 0.08,
+      "q2_custom_hack": 0.74,
+      "q3_public_api": 0.86,
+      "q4_lifecycle": 0.72,
+      "q5_design_effort": [0.03, 0.06, 0.13, 0.33, 0.45]
+    },
+    "src/ScopedSlotShim.vue": {
+      "q1_direct_rewrite": 0.07,
+      "q2_custom_hack": 0.72,
+      "q3_public_api": 0.88,
+      "q4_lifecycle": 0.5,
+      "q5_design_effort": [0.03, 0.06, 0.13, 0.33, 0.45]
+    },
+    "src/SearchBox.vue": {
+      "q1_direct_rewrite": 0.55,
+      "q2_custom_hack": 0.45,
+      "q3_public_api": 0.22,
+      "q4_lifecycle": 0.3,
+      "q5_design_effort": [0.18, 0.3, 0.3, 0.16, 0.06]
+    },
+    "src/Spacer.vue": {
+      "q1_direct_rewrite": 0.98,
+      "q2_custom_hack": 0.01,
+      "q3_public_api": 0.02,
+      "q4_lifecycle": 0.01,
+      "q5_design_effort": [0.8, 0.14, 0.04, 0.01, 0.01]
+    },
+    "src/Spinner.vue": {
+      "q1_direct_rewrite": 0.98,
+      "q2_custom_hack": 0.01,
+      "q3_public_api": 0.01,
+      "q4_lifecycle": 0.01,
+      "q5_design_effort": [0.8, 0.14, 0.04, 0.01, 0.01]
+    },
+    "src/SsrHydration.js": {
+      "q1_direct_rewrite": 0.1,
+      "q2_custom_hack": 0.62,
+      "q3_public_api": 0.8,
+      "q4_lifecycle": 0.74,
+      "q5_design_effort": [0.05, 0.08, 0.15, 0.32, 0.4]
+    },
+    "src/Stars.vue": {
+      "q1_direct_rewrite": 0.97,
+      "q2_custom_hack": 0.02,
+      "q3_public_api": 0.02,
+      "q4_lifecycle": 0.01,
+      "q5_design_effort": [0.8, 0.14, 0.04, 0.01, 0.01]
+    },
+    "src/StoreBridge.vue": {
+      "q1_direct_rewrite": 0.08,
+      "q2_custom_hack": 0.8,
+      "q3_public_api": 0.86,
+      "q4_lifecycle": 0.6,
+      "q5_design_effort": [0.03, 0.06, 0.13, 0.33, 0.45]
+    },
+    "src/Tag.vue": {
+      "q1_direct_rewrite": 0.96,
+      "q2_custom_hack": 0.02,
+      "q3_public_api": 0.03,
+      "q4_lifecycle": 0.02,
+      "q5_design_effort": [0.8, 0.14, 0.04, 0.01, 0.01]
+    },
+    "src/Toggle.vue": {
+      "q1_direct_rewrite": 0.95,
+      "q2_custom_hack": 0.03,
+      "q3_public_api": 0.04,
+      "q4_lifecycle": 0.02,
+      "q5_design_effort": [0.8, 0.14, 0.04, 0.01, 0.01]
+    },
+    "src/Tooltip.vue": {
+      "q1_direct_rewrite": 0.42,
+      "q2_custom_hack": 0.62,
+      "q3_public_api": 0.25,
+      "q4_lifecycle": 0.4,
+      "q5_design_effort": [0.18, 0.3, 0.3, 0.16, 0.06]
+    },
+    "src/TransitionGroupShim.vue": {
+      "q1_direct_rewrite": 0.12,
+      "q2_custom_hack": 0.55,
+      "q3_public_api": 0.8,
+      "q4_lifecycle": 0.62,
+      "q5_design_effort": [0.05, 0.08, 0.15, 0.32, 0.4]
+    },
+    "src/Uploader.vue": {
+      "q1_direct_rewrite": 0.38,
+      "q2_custom_hack": 0.6,
+      "q3_public_api": 0.36,
+      "q4_lifecycle": 0.22,
+      "q5_design_effort": [0.08, 0.15, 0.27, 0.3, 0.2]
+    },
+    "src/Wizard.vue": {
+      "q1_direct_rewrite": 0.35,
+      "q2_custom_hack": 0.58,
+      "q3_public_api": 0.42,
+      "q4_lifecycle": 0.3,
+      "q5_design_effort": [0.08, 0.15, 0.27, 0.3, 0.2]
+    }
+  }
+}

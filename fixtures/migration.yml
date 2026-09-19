@@ -1,0 +1,39 @@
+# Configuration for the fixture Migration.
+#
+# This exists to keep the classifier honest across changes, not to prove it
+# is accurate. See fixtures/README.md before quoting any number from it.
+
+include:
+  - "src/**/*.{js,vue}"
+
+# Real code that IS indexed into the dependency graph but never classified.
+# The mixins match a Detect Rule, but migrating them is part of migrating the
+# components that use them. Excluding rather than ignoring keeps them in the
+# graph, so those components' imports_local stays correct.
+exclude:
+  - "src/mixins/**"
+
+criteria: |
+  Migrating Vue 2 Options API components to the Vue 3 Composition API.
+  "Mechanical" means every Match can be rewritten with a direct one-to-one
+  syntax equivalent, with no behavioural decision to make.
+
+detect:
+  rules:
+    - id: options-api
+      pattern: 'export\s+default\s*\{'
+    - id: vue-global
+      pattern: '\bVue\.(set|delete|filter|directive|mixin)\b'
+    - id: vue-instance
+      pattern: 'new\s+Vue\s*\('
+    - id: legacy-lifecycle
+      pattern: '\b(beforeDestroy|destroyed|activated)\s*\('
+    - id: internal-access
+      pattern: '\$(children|scopedSlots|forceUpdate|root)\b'
+
+judge:
+  backend: replay
+  replay_path: ../replay.json
+
+report:
+  list_files_for: [judgment, redesign]
