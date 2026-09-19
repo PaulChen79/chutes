@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 560" width="1280" height="560" role="img" aria-label="What code decides, and what the Judge is asked">
+  <defs>
+    <style>
+      .h  { font: 700 21px ui-sans-serif,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif }
+      .sub{ font: 400 13px ui-monospace,SFMono-Regular,Menlo,monospace; fill:#8b949e }
+      .li { font: 400 15px ui-sans-serif,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif; fill:#c9d1d9 }
+      .qi { font: 400 14px ui-sans-serif,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif; fill:#c9d1d9 }
+      .tag{ font: 600 11px ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:2px }
+      .ft { font: 400 15px ui-sans-serif,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif; fill:#8b949e }
+      .fb { font: 600 15px ui-monospace,SFMono-Regular,Menlo,monospace; fill:#e6edf3 }
+    </style>
+  </defs>
+
+  <rect width="1280" height="560" fill="#0d1117"/>
+
+  <!-- LEFT: facts -->
+  <rect x="48" y="40" width="560" height="380" rx="12" fill="#0f1a12" stroke="#238636" stroke-width="1.5"/>
+  <text class="tag" x="76" y="78" fill="#3fb950">FREE · DETERMINISTIC · NEVER ASKED</text>
+  <text class="h"   x="76" y="112" fill="#e6edf3">Code decides everything code can decide.</text>
+  <text class="sub" x="76" y="138">globs, regexes, the import graph</text>
+
+  <g class="li">
+    <text x="98" y="186">Does this file match a Detect Rule?</text>
+    <text x="98" y="222">What does it import?</text>
+    <text x="98" y="258">What imports it?</text>
+    <text x="98" y="294">Is it a test file?</text>
+    <text x="98" y="330">Which tests cover it?</text>
+    <text x="98" y="366">How deep does it sit in the graph?</text>
+  </g>
+  <g fill="#3fb950">
+    <circle cx="82" cy="181" r="3"/><circle cx="82" cy="217" r="3"/><circle cx="82" cy="253" r="3"/>
+    <circle cx="82" cy="289" r="3"/><circle cx="82" cy="325" r="3"/><circle cx="82" cy="361" r="3"/>
+  </g>
+
+  <!-- RIGHT: judgments -->
+  <rect x="672" y="40" width="560" height="380" rx="12" fill="#1c1508" stroke="#9e6a03" stroke-width="1.5"/>
+  <text class="tag" x="700" y="78" fill="#d29922">$0.0000419 / FILE · ONE REQUEST · FIVE QUESTIONS</text>
+  <text class="h"   x="700" y="112" fill="#e6edf3">The Judge is asked only what needs reading.</text>
+  <text class="sub" x="700" y="138">answers are probabilities, never a Lane</text>
+
+  <g class="qi">
+    <text x="722" y="180">Can every matched location be rewritten</text>
+    <text x="722" y="199">one-to-one, with nobody deciding anything?</text>
+    <text x="722" y="243">Does it contain a custom workaround that</text>
+    <text x="722" y="262">deliberately bypasses the framework?</text>
+    <text x="722" y="306">Would migrating it change the public API?</text>
+    <text x="722" y="340">Does it depend on lifecycle or timing</text>
+    <text x="722" y="359">semantics of the framework being left?</text>
+    <text x="722" y="393">How much human design does it require?</text>
+  </g>
+  <g fill="#d29922" class="tag">
+    <text x="700" y="180">1</text><text x="700" y="243">2</text><text x="700" y="306">3</text>
+    <text x="700" y="340">4</text><text x="700" y="393">5</text>
+  </g>
+
+  <!-- the trap -->
+  <rect x="48" y="444" width="560" height="76" rx="10" fill="#161b22" stroke="#30363d"/>
+  <text class="tag" x="76" y="472" fill="#f85149">NEVER ASKED OF THE JUDGE</text>
+  <text class="ft" x="76" y="494" font-size="13.5">“Does this file have test coverage?” A Judge can only guess:</text>
+  <text class="ft" x="76" y="512" font-size="13.5">the answer lives in files it was never shown. So code states it.</text>
+
+  <rect x="672" y="444" width="560" height="76" rx="10" fill="#161b22" stroke="#30363d"/>
+  <text class="tag" x="700" y="472" fill="#58a6ff">COMPOSED IN CODE, NEVER BY THE JUDGE</text>
+  <text class="fb" x="700" y="500">Lane = rules over probabilities</text>
+  <text class="ft" x="988" y="500" font-size="14">confidence = min(conditions)</text>
+</svg>

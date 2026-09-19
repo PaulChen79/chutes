@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 360" width="1280" height="360" role="img" aria-label="chutes — per-file triage for large refactors">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d1117"/>
+      <stop offset="100%" stop-color="#161b22"/>
+    </linearGradient>
+    <style>
+      .wm { font: 700 86px ui-sans-serif,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif; fill:#e6edf3; letter-spacing:-3px }
+      .tg { font: 400 25px ui-sans-serif,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif; fill:#8b949e }
+      .kk { font: 600 13px ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:2.5px }
+      .bl { font: 600 12px ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:1.5px; fill:#8b949e }
+      .nn { font: 700 15px ui-monospace,SFMono-Regular,Menlo,monospace; fill:#e6edf3 }
+    </style>
+  </defs>
+
+  <rect width="1280" height="360" fill="url(#bg)"/>
+  <rect x="0" y="0" width="1280" height="3" fill="#3fb950"/>
+  <rect x="426" y="0" width="427" height="3" fill="#d29922"/>
+  <rect x="853" y="0" width="427" height="3" fill="#f85149"/>
+
+  <!-- wordmark -->
+  <text class="wm" x="80" y="176">chutes</text>
+  <text class="tg" x="84" y="220">Per-file triage for large refactors.</text>
+  <text class="kk" x="85" y="264" fill="#3fb950">MECHANICAL</text>
+  <text class="kk" x="216" y="264" fill="#484f58">/</text>
+  <text class="kk" x="236" y="264" fill="#d29922">JUDGMENT</text>
+  <text class="kk" x="350" y="264" fill="#484f58">/</text>
+  <text class="kk" x="370" y="264" fill="#f85149">REDESIGN</text>
+
+  <!-- the undifferentiated pile -->
+  <text class="bl" x="736" y="52">400 FILES</text>
+  <g fill="#21262d" stroke="#30363d" stroke-width="1">
+    <rect x="736" y="64" width="19" height="19" rx="3"/><rect x="762" y="64" width="19" height="19" rx="3"/>
+    <rect x="788" y="64" width="19" height="19" rx="3"/><rect x="814" y="64" width="19" height="19" rx="3"/>
+    <rect x="840" y="64" width="19" height="19" rx="3"/><rect x="866" y="64" width="19" height="19" rx="3"/>
+    <rect x="892" y="64" width="19" height="19" rx="3"/><rect x="918" y="64" width="19" height="19" rx="3"/>
+    <rect x="944" y="64" width="19" height="19" rx="3"/><rect x="970" y="64" width="19" height="19" rx="3"/>
+    <rect x="996" y="64" width="19" height="19" rx="3"/><rect x="1022" y="64" width="19" height="19" rx="3"/>
+    <rect x="1048" y="64" width="19" height="19" rx="3"/><rect x="1074" y="64" width="19" height="19" rx="3"/>
+  </g>
+
+  <!-- chutes -->
+  <g fill="none" stroke-width="2.5" stroke-linecap="round" opacity="0.55">
+    <path d="M905 96 C 905 150, 800 170, 786 224" stroke="#3fb950"/>
+    <path d="M905 96 C 905 160, 935 160, 936 224" stroke="#d29922"/>
+    <path d="M905 96 C 905 150, 1072 170, 1086 224" stroke="#f85149"/>
+  </g>
+  <g stroke-width="1">
+    <rect x="844" y="153" width="15" height="15" rx="3" fill="#0d3a1a" stroke="#3fb950"/>
+    <rect x="913" y="153" width="15" height="15" rx="3" fill="#3d2f04" stroke="#d29922"/>
+    <rect x="983" y="153" width="15" height="15" rx="3" fill="#3d1416" stroke="#f85149"/>
+    <rect x="797" y="188" width="15" height="15" rx="3" fill="#0d3a1a" stroke="#3fb950"/>
+    <rect x="1055" y="188" width="15" height="15" rx="3" fill="#3d1416" stroke="#f85149"/>
+  </g>
+
+  <!-- bins -->
+  <g>
+    <rect x="722" y="226" width="128" height="52" rx="8" fill="#0d3a1a" stroke="#3fb950" stroke-width="1.5"/>
+    <text class="nn" x="786" y="258" text-anchor="middle">codemod it</text>
+    <text class="bl" x="786" y="298" text-anchor="middle" fill="#3fb950">MECHANICAL</text>
+
+    <rect x="872" y="226" width="128" height="52" rx="8" fill="#3d2f04" stroke="#d29922" stroke-width="1.5"/>
+    <text class="nn" x="936" y="258" text-anchor="middle">ask someone</text>
+    <text class="bl" x="936" y="298" text-anchor="middle" fill="#d29922">JUDGMENT</text>
+
+    <rect x="1022" y="226" width="128" height="52" rx="8" fill="#3d1416" stroke="#f85149" stroke-width="1.5"/>
+    <text class="nn" x="1086" y="258" text-anchor="middle">rethink it</text>
+    <text class="bl" x="1086" y="298" text-anchor="middle" fill="#f85149">REDESIGN</text>
+  </g>
+
+  <text class="bl" x="80" y="322" fill="#484f58">$0.0000419 / file   ·   2,961 files / minute   ·   MIT</text>
+</svg>
