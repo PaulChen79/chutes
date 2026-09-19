@@ -68,6 +68,20 @@ asking. Every question the Judge is asked is one it is actually in a position
 to answer, and the answers are composed into a Lane in code, never by the
 Judge.
 
+## What it costs
+
+Measured on 2026-09-19 against 1,008 files: **$0.0000419 per file** and
+**2,961 files per minute**, on model `jev-1.13.0`. A thousand-file repository
+costs about four cents to classify and takes about twenty seconds.
+
+That run also found that **not one of those 1,008 files was classified
+Mechanical**, including a dozen trivial components hand-labelled as such.
+Separating mechanical work from the rest is the point of the tool, so this is
+the most important thing currently known about it. See
+[`measurements/`](./measurements/README.md) for the write-up; the short
+version is that the Mechanical Threshold looks miscalibrated against this
+model, and establishing where the line belongs is what Calibration is for.
+
 ## Accuracy is unmeasured
 
 There is no accuracy figure in this README, because there is no accuracy figure.
@@ -88,11 +102,12 @@ uncalibrated.
 
 | Working | Not yet |
 | --- | --- |
-| `chutes init` | `chutes status` and `PLAN.md` |
-| `chutes init --report` | The real Judge backend |
-| `chutes detect --dry-run` | Incremental rescan |
-| `chutes config validate` | Waves and scheduling |
-| `chutes scan` (replay Judge only) | Calibration |
+| `chutes init` | Waves and scheduling |
+| `chutes init --report` | Calibration |
+| `chutes detect --dry-run` | `chutes next` / `done` / `fail` |
+| `chutes config validate` | The editor plugin |
+| `chutes scan` (replay and Jev) | |
+| `chutes status` and `PLAN.md` | |
 
 ## Getting started
 

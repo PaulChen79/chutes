@@ -1,0 +1,28 @@
+{
+  "measuredAt": "2026-09-19",
+  "model": "jev-1.13.0",
+  "configFingerprint": "cf_329cf8dc61aa0370",
+  "files": 1008,
+  "judged": 1008,
+  "errors": 0,
+  "seconds": 20.4,
+  "inputTokens": 1004980,
+  "usd": 0.0422,
+  "usdPerFile": 4.187e-5,
+  "filesPerMinute": 2960.8,
+  "requestsPerMinute": 2960.8,
+  "lanes": {
+    "mechanical": 0,
+    "judgment": 476,
+    "redesign": 532
+  },
+  "assumed": {
+    "usdPerFile": 0.0001,
+    "filesPerMinute": 1000,
+    "rateLimitRpm": 1200
+  },
+  "findings": [
+    "Not one of 1008 files was classified mechanical. Either the codebase genuinely has none, or thresholds.mechanical is miscalibrated against this model. Calibration is what settles which; do not retune the Threshold to taste.",
+    "Sustained 2960.8 requests/minute against a documented limit of 1200, with no rejections. The documented limit was not enforced here, so the throughput model should not treat it as a hard ceiling -- nor assume exceeding it is safe."
+  ]
+}

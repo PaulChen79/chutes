@@ -167,6 +167,10 @@ export async function scanCommand(cwd: string, options: ScanOptions): Promise<vo
   const collection = await collect(cwd, config);
   const fingerprint = configFingerprint(config, judge);
   const scannedAt = new Date().toISOString();
+  // What the service said it billed, summed across the run. Zero for a
+  // backend that spends nothing.
+  let billedTokens = 0;
+  const startedAt = Date.now();
 
   // Only files with at least one Match are classified. A candidate the
   // Detect Rules never fired on is Untouched: absent from the Plan, but
@@ -288,6 +292,7 @@ export async function scanCommand(cwd: string, options: ScanOptions): Promise<vo
 
       try {
         const response = await judge.ask({ path, state, criteria: config.criteria });
+        if (response.usage !== undefined) billedTokens += response.usage.inputTokens;
         const { lane, confidence, limitedBy } = classify(response.answers, config);
         return {
           ...base,
@@ -350,6 +355,15 @@ export async function scanCommand(cwd: string, options: ScanOptions): Promise<vo
     `  judgment    ${lanes.judgment}`,
     `  redesign    ${lanes.redesign}`,
   ];
+  if (billedTokens > 0) {
+    const seconds = (Date.now() - startedAt) / 1000;
+    const spent = (billedTokens / 1_000_000) * config.judge.price_per_mtok;
+    lines.push(
+      "",
+      `  billed      ${billedTokens.toLocaleString("en-US")} input tokens` +
+        ` ($${spent.toFixed(4)}) in ${seconds.toFixed(1)}s`,
+    );
+  }
   if (lanes.removed > 0) lines.push(`  removed     ${lanes.removed}  (gone from the repository)`);
   if (lanes.error > 0) {
     // Never folded into a Lane count, and never silent: an error is a file

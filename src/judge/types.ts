@@ -63,6 +63,14 @@ export interface JudgeResponse {
   backend: string;
   /** The model identifier, where the backend has one. */
   model: string | undefined;
+  /**
+   * What this request was actually billed for, as the service reported it.
+   *
+   * Reported rather than estimated, because the point of measuring cost is
+   * to find out whether the estimate was right. Only input tokens: the
+   * vendor does not bill for output.
+   */
+  usage?: { inputTokens: number } | undefined;
 }
 
 export interface Judge {

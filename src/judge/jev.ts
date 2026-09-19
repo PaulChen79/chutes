@@ -128,7 +128,16 @@ export class JevJudge implements Judge {
     }
 
     if (!response.ok) {
-      const error = new Error(describeStatus(response.status));
+      // Include what the service said. Without it a 400 or 422 is a dead
+      // end: the request is wrong, and the one party that knows why has
+      // just been ignored.
+      const detail = await response.text().catch(() => "");
+      const trimmed = detail.trim().slice(0, 300);
+      const error = new Error(
+        trimmed === ""
+          ? describeStatus(response.status)
+          : `${describeStatus(response.status)}: ${trimmed}`,
+      );
       // A rejected key or a malformed request will be rejected again in
       // exactly the same way, so retrying only wastes the rate limit.
       if (FATAL_STATUS.has(response.status)) error.cause = "fatal";
@@ -136,10 +145,12 @@ export class JevJudge implements Judge {
     }
 
     const body = (await response.json()) as JevResponse;
+    const inputTokens = body.usage?.input_tokens;
     return {
       answers: readAnswers(body),
       backend: this.backend,
       model: body.model ?? this.model,
+      usage: typeof inputTokens === "number" ? { inputTokens } : undefined,
     };
   }
 }

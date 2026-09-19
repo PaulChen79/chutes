@@ -150,7 +150,7 @@ questions:
 
 judge:
   backend: jev        # jev | replay
-  model: systemone
+  model: jev-latest   # GET /v1/models lists what your account can use
   base_url: https://api.typesafe.ai
   # Print the estimated cost and wait for confirmation before spending.
   # On by default so a misconfigured run costs nothing to discover.

@@ -165,8 +165,12 @@ export const configSchema = z.strictObject({
 
   judge: section({
     backend: z.enum(["jev", "replay"]).default("jev"),
-    /** The Judge model. Part of the Config Fingerprint: a new version answers differently. */
-    model: nonEmpty.default("systemone"),
+    /**
+     * The Judge model. Part of the Config Fingerprint: a new version answers
+     * differently, so a calibration gathered under the old one no longer
+     * holds. `GET /v1/models` lists what the account can use.
+     */
+    model: nonEmpty.default("jev-latest"),
     /** The API root. Configurable for a proxy or a self-hosted deployment. */
     base_url: nonEmpty.default("https://api.typesafe.ai"),
     /**

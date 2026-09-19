@@ -1,14 +1,19 @@
 import type { ChutesConfig } from "../config/schema.js";
+import { DESIGN_EFFORT_CRITERIA, renderQuestion, resolveQuestions } from "./questions.js";
 
 /**
- * Characters per token, for turning an assembled State into a bill.
+ * Characters per token, for turning a request into a bill.
  *
- * Four is the conventional English-prose ratio and code runs denser, so this
- * is an under-estimate of tokens and therefore of cost. The estimate exists
- * to stop a misconfigured run, not to reconcile an invoice, and the figure
- * it reports is explicitly labelled an estimate.
+ * Calibrated against real requests rather than assumed: the conventional
+ * prose ratio of four under-reported an observed 785-token request by more
+ * than half, because code tokenises densely and the JSON envelope is not
+ * free. This ratio deliberately errs high.
+ *
+ * The direction matters more than the accuracy. This number exists to stop
+ * a misconfigured run before it spends, so an estimate that comes in under
+ * the real bill is the one failure mode that defeats the purpose.
  */
-const CHARS_PER_TOKEN = 4;
+const CHARS_PER_TOKEN = 2.2;
 
 export interface Estimate {
   files: number;
@@ -23,8 +28,19 @@ export interface Estimate {
  * Only input tokens are counted: the vendor does not bill for output.
  */
 export function estimate(stateChars: number[], config: ChutesConfig): Estimate {
+  // The five question texts travel with every request, not once per run.
+  // Leaving them out under-estimated a real request eightfold on a small
+  // file -- and for a gate whose job is to stop an expensive mistake,
+  // under-estimating is the direction that fails quietly.
+  const questions = resolveQuestions(config);
+  const overheadChars =
+    Object.values(questions).reduce(
+      (total, text) => total + renderQuestion(text, config.criteria).length,
+      0,
+    ) + DESIGN_EFFORT_CRITERIA.join("").length;
+
   const inputTokens = stateChars.reduce(
-    (total, chars) => total + Math.ceil(chars / CHARS_PER_TOKEN),
+    (total, chars) => total + Math.ceil((chars + overheadChars) / CHARS_PER_TOKEN),
     0,
   );
   const files = stateChars.length;
@@ -51,6 +67,6 @@ export function describeEstimate(e: Estimate): string {
     `  cost          ~$${e.usd.toFixed(4)}`,
     `  duration      ~${duration}`,
     "",
-    "These are estimates. Token counts are approximated from State size.",
+    "These are estimates. Token counts are approximated from State and question size.",
   ].join("\n");
 }
