@@ -13,6 +13,12 @@ import {
 /** The environment variable the vendor's own tooling uses. */
 export const API_KEY_ENV = "TYPESAFE_API_KEY";
 
+/**
+ * Where a key is created. Worth naming in the errors themselves: knowing which
+ * variable to set is not the same as knowing where the value comes from.
+ */
+export const API_KEY_URL = "https://console.typesafe.ai/keys";
+
 interface JevAnswer {
   noul?: number;
   score?: number;
@@ -29,7 +35,8 @@ interface JevResponse {
 const FATAL_STATUS = new Set([400, 401, 403, 404, 422]);
 
 function describeStatus(status: number): string {
-  if (status === 401 || status === 403) return "the API key was rejected";
+  if (status === 401 || status === 403)
+    return `the API key was rejected (check it at ${API_KEY_URL})`;
   if (status === 422) return "the request was rejected as invalid";
   if (status === 429) return "the rate limit was exceeded";
   if (status === 529) return "the service is overloaded";
@@ -66,7 +73,8 @@ export class JevJudge implements Judge {
     if (apiKey === undefined || apiKey === "") {
       throw new Error(
         `judge.backend is "jev" but ${API_KEY_ENV} is not set. ` +
-          `Export it, or set judge.backend to "replay" and supply a recording.`,
+          `Create a key at ${API_KEY_URL} and export it, ` +
+          `or set judge.backend to "replay" and supply a recording.`,
       );
     }
     return new JevJudge(config.judge.model, apiKey, config, resolveQuestions(config));

@@ -7,6 +7,7 @@ as one number. chutes turns it into three piles you can actually staff.
 
 [![status: pre-alpha](https://img.shields.io/badge/status-pre--alpha-f85149)](#pre-alpha-and-not-yet-calibrated)
 [![licence: MIT](https://img.shields.io/github/license/PaulChen79/chutes?color=3fb950&label=licence)](./LICENSE)
+[![judge: Jev](https://img.shields.io/badge/judge-Jev%20%C2%B7%20typesafe.ai-0ea5e9)](#the-judge-is-jev)
 [![node](https://img.shields.io/badge/node-%E2%89%A5%2020-5FA04E?logo=node.js&logoColor=white)](./package.json)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](./tsconfig.json)
 [![measured cost](https://img.shields.io/badge/measured-%240.0000419%20%2F%20file-8957e5)](./measurements/README.md)
@@ -72,24 +73,74 @@ and diffable as the work lands.
   See assets/README.md.
 -->
 
+## The Judge is Jev
+
+chutes does not ship a model of its own. The Judge is
+[**Jev**](https://docs.typesafe.ai/models), a judgment model from
+[TypeSafe AI](https://typesafe.ai), reached through their System One API.
+
+It was chosen for one property: **it returns calibrated probabilities, not
+prose.** Ask a chat model *"is this change mechanical?"* and you get a
+paragraph you then have to parse, and decide how much to believe. Ask Jev and
+you get `0.82` — a number you can put a threshold on, compare across four
+hundred files, and later check for honesty.
+
+The whole design depends on that. Lanes are composed **in code** from those
+numbers, and a Confidence is the minimum across the conditions that produced
+the Lane. Neither is possible with free text.
+
+### Getting a key
+
+Create one at [console.typesafe.ai/keys](https://console.typesafe.ai/keys),
+then put it in your environment:
+
+```sh
+export TYPESAFE_API_KEY=...
+```
+
+chutes reads it from the environment only. It is never written into
+`migration.yml`, never stored in the Plan, and never logged. A missing or
+rejected key fails immediately, before any file is read or any money spent.
+
+### What it costs
+
+This is a paid third-party service, and **it is the only part of chutes that
+costs anything**. Measured at **$0.0000419 per file** — a thousand-file
+codebase is about four cents. `chutes scan` prints its estimate and waits for
+your confirmation before sending anything.
+
+Everything else is free and offline: `init`, `init --report`,
+`detect --dry-run`, `scan --print-state` and `status` never contact it, and the
+109-test suite needs neither network nor key.
+
 ## Try it
+
+**Not on npm yet.** Install from source:
+
+```sh
+git clone https://github.com/PaulChen79/chutes.git
+cd chutes && pnpm install && pnpm build && npm link
+```
+
+Then, in the repository you want to migrate:
 
 ```sh
 # See what is actually in your codebase, before writing any configuration.
-npx chutes init --report
+chutes init --report
 
-# Write a configuration skeleton.
-npx chutes init
+# Write a configuration skeleton, then edit its Detect Rules and Criteria.
+chutes init
 
 # Check your Detect Rules match what you expect. Contacts nothing.
-npx chutes detect --dry-run
+chutes detect --dry-run
 
 # See exactly what would be sent to the Judge for one file. Sends nothing.
-npx chutes scan --print-state src/some/file.ts
+chutes scan --print-state src/some/file.ts
 
-# Classify. Prints the estimated cost and waits for confirmation first.
-npx chutes scan
-npx chutes status
+# The only step that needs a key, and the only one that costs money.
+export TYPESAFE_API_KEY=...
+chutes scan          # prints the estimated cost, then waits for confirmation
+chutes status
 ```
 
 `init --report` comes first on purpose. Nobody knows what their Detect Rules
