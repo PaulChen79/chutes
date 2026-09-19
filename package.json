@@ -3,9 +3,27 @@
   "version": "0.0.0",
   "description": "Per-file triage for large refactors: sort every file into mechanical, judgment, or redesign with calibrated confidence.",
   "license": "MIT",
+  "author": "Paul Chen",
+  "homepage": "https://github.com/PaulChen79/chutes#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PaulChen79/chutes.git"
+  },
+  "bugs": {
+    "url": "https://github.com/PaulChen79/chutes/issues"
+  },
+  "keywords": [
+    "migration",
+    "refactoring",
+    "triage",
+    "static-analysis",
+    "cli",
+    "dependency-graph",
+    "code-migration"
+  ],
   "type": "module",
   "bin": {
-    "chutes": "./dist/cli.js"
+    "chutes": "dist/cli.js"
   },
   "files": [
     "dist"
