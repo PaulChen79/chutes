@@ -2,6 +2,7 @@ import { Command } from "commander";
 import { validateConfig } from "./commands/config.js";
 import { detectCommand } from "./commands/detect.js";
 import { init } from "./commands/init.js";
+import { reportCommand } from "./commands/report.js";
 import { DEFAULT_MIGRATION } from "./paths.js";
 import { version } from "./version.js";
 
@@ -16,7 +17,16 @@ program
   .command("init")
   .description("Write a configuration skeleton for a Migration")
   .option("-m, --migration <name>", "name of the Migration", DEFAULT_MIGRATION)
-  .action(async (options: { migration: string }) => {
+  .option("--report", "Observe the repository and print what it can see; writes nothing")
+  .option("--json", "With --report, emit JSON instead of prose")
+  .action(async (options: { migration: string; report?: boolean; json?: boolean }) => {
+    if (options.report) {
+      await reportCommand(process.cwd(), { json: options.json });
+      return;
+    }
+    if (options.json) {
+      throw new Error("--json only applies to init --report.");
+    }
     await init(process.cwd(), { migration: options.migration });
   });
 

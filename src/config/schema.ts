@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { DEFAULT_IGNORE } from "../ignores.js";
 
 const probability = z.number().min(0).max(1);
 const positiveInt = z.number().int().positive();
@@ -58,9 +59,7 @@ export const configSchema = z.strictObject({
    * output is a *copy* of the source, so indexing it would double every
    * `imported by` count and hand the Judge a fact that is simply wrong.
    */
-  ignore: z
-    .array(nonEmpty)
-    .default(["dist/**", "build/**", "out/**", "coverage/**", "**/*.d.ts", "**/*.min.js"]),
+  ignore: z.array(nonEmpty).default(DEFAULT_IGNORE),
 
   /**
    * Real code that is indexed into the dependency graph but never classified.

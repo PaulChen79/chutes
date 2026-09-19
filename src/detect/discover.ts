@@ -1,14 +1,7 @@
 import picomatch from "picomatch";
 import { glob } from "tinyglobby";
 import type { ChutesConfig } from "../config/schema.js";
-
-/**
- * Never indexed, whatever `include` says. Dependencies and repository
- * metadata are not the user's code to migrate, and a broad `include` — a
- * recursive TypeScript glob, or a monorepo package glob — would otherwise
- * pull in thousands of vendored files and put them in the Plan.
- */
-const ALWAYS_IGNORED = ["**/node_modules/**", "**/.git/**", ".chutes/**"];
+import { ALWAYS_IGNORED } from "../ignores.js";
 
 export interface Discovery {
   /**

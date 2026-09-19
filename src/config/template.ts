@@ -5,6 +5,8 @@
  * in without reading external documentation. Settings that govern *how a judgement
  * is reached* are deliberately absent -- see the note on tuning at the bottom.
  */
+import { DEFAULT_IGNORE } from "../ignores.js";
+
 export function configTemplate(migration: string): string {
   return `# chutes -- Migration "${migration}"
 #
@@ -29,12 +31,7 @@ include:
 # "exclude", because a build directory is a COPY of your source -- index it and
 # every file's "imported by" count is silently doubled.
 ignore:
-  - "dist/**"
-  - "build/**"
-  - "out/**"
-  - "coverage/**"
-  - "**/*.d.ts"
-  - "**/*.min.js"
+${DEFAULT_IGNORE.map((pattern) => `  - "${pattern}"`).join("\n")}
 
 # Real code that IS indexed into the dependency graph but is never classified.
 # This is the one for your tests: it keeps them out of the Plan while still

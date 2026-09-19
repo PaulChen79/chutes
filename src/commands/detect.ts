@@ -3,11 +3,7 @@ import { loadConfig } from "../config/load.js";
 import type { ChutesConfig, CoverageSource } from "../config/schema.js";
 import { CONTEXT_LINES, type FileMatches } from "../detect/match.js";
 import type { FileFacts } from "../graph/facts.js";
-
-/** English pluralisation for the small set of nouns this report uses. */
-function count(n: number, singular: string, plural: string): string {
-  return `${n} ${n === 1 ? singular : plural}`;
-}
+import { count } from "../text.js";
 
 interface RuleTally {
   id: string;
