@@ -20,6 +20,14 @@ export interface Collection {
   candidates: string[];
   /** Matches per candidate, keyed by path. */
   matches: Map<string, FileMatches>;
+  /**
+   * Contents of the candidates only, keyed by path.
+   *
+   * Candidates only because the Plan is built from them and holding every
+   * indexed file in memory would scale with the repository rather than with
+   * the Migration.
+   */
+  contents: Map<string, string>;
   graph: DependencyGraph;
   failures: ReadFailure[];
   /**
@@ -52,6 +60,7 @@ export async function collect(cwd: string, config: ChutesConfig): Promise<Collec
   const max = config.detect.max_matches_per_file;
 
   const matches = new Map<string, FileMatches>();
+  const contents = new Map<string, string>();
   const modules = new Map<string, ParsedModule>();
   const failures: ReadFailure[] = [];
 
@@ -76,9 +85,10 @@ export async function collect(cwd: string, config: ChutesConfig): Promise<Collec
       }
       modules.set(result.path, parseModule(result.contents));
       if (candidateSet.has(result.path)) {
+        contents.set(result.path, result.contents);
         matches.set(result.path, {
           path: result.path,
-          ...matchLines(splitLines(result.contents), rules, max),
+          ...matchLines(splitLines(result.contents), rules, max, config.state.context_lines),
         });
       }
     }
@@ -88,6 +98,7 @@ export async function collect(cwd: string, config: ChutesConfig): Promise<Collec
     indexed,
     candidates,
     matches,
+    contents,
     graph: buildGraph({ modules, report }, config),
     failures,
     coverageFellBack:

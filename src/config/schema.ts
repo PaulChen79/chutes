@@ -7,6 +7,14 @@ const nonEmpty = z.string().min(1);
 
 const lane = z.enum(["mechanical", "judgment", "redesign"]);
 
+const questionId = z.enum([
+  "q1_direct_rewrite",
+  "q2_custom_hack",
+  "q3_public_api",
+  "q4_lifecycle",
+  "q5_design_effort",
+]);
+
 /**
  * Where the `covered` fact comes from. `report` falls back to `importgraph`
  * when no report can be read, so this is the configured source, not
@@ -113,8 +121,8 @@ export const configSchema = z.strictObject({
       design_effort: probability.default(0.5),
     }),
     mechanical: section({
-      direct_rewrite: probability.default(0.9),
-      custom_hack: probability.default(0.1),
+      direct_rewrite: probability.default(0.85),
+      custom_hack: probability.default(0.2),
     }),
   }),
 
@@ -123,8 +131,42 @@ export const configSchema = z.strictObject({
     truncated_penalty: probability.default(0.15),
   }),
 
+  /**
+   * How much of a file the Judge is shown.
+   *
+   * These are limits on the State, not on what is counted: a Match dropped
+   * to fit still contributes to `matchCount`, so the Judge is told how much
+   * it is not seeing rather than being quietly shown a smaller file.
+   */
+  state: section({
+    context_lines: z.number().int().min(0).default(3),
+    outline_limit: positiveInt.default(40),
+    /**
+     * The per-request State budget, in characters rather than tokens.
+     *
+     * Characters because they are the thing that can be measured exactly and
+     * locally; the Jev limit is ~32k tokens for State plus the longest single
+     * question, and four characters per token is the conservative ratio.
+     */
+    max_chars: positiveInt.default(96_000),
+  }),
+
+  /**
+   * An expert escape hatch: replace a built-in question's wording.
+   *
+   * Overriding a question changes the Config Fingerprint, and `calibrate`
+   * will refuse to reuse a labelled set gathered under the built-in wording.
+   * That is the point rather than a side effect -- the answers are no longer
+   * measuring the same thing.
+   */
+  questions: section({
+    overrides: z.partialRecord(questionId, nonEmpty).default({}),
+  }),
+
   judge: section({
     backend: z.enum(["jev", "replay"]).default("jev"),
+    /** Where the replay backend reads its recorded answers from. */
+    replay_path: nonEmpty.default("replay.json"),
     concurrency: positiveInt.default(16),
     max_retries: z.number().int().min(0).default(2),
     timeout_ms: positiveInt.default(20_000),

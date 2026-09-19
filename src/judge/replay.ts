@@ -52,7 +52,7 @@ export class ReplayJudge implements Judge {
 
   private constructor(
     private readonly answers: Map<string, Answers>,
-    private readonly model: string | undefined,
+    readonly model: string | undefined,
     private readonly source: string,
   ) {}
 

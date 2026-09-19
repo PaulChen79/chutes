@@ -133,8 +133,25 @@ confidence:
 # The Judge
 # ---------------------------------------------------------------------------
 
+# How much of each file the Judge is shown. These cap the State, never the
+# counts: a Match dropped to fit still tells the Judge how many there were.
+state:
+  context_lines: 3
+  outline_limit: 40
+  max_chars: 96000
+
+# EXPERT ONLY. Replace a built-in question's wording. Doing this changes the
+# config fingerprint, and calibrate will refuse to reuse any labelled set
+# gathered under the built-in wording -- the answers no longer measure the
+# same thing. Leave this alone unless you know exactly why you are not.
+questions:
+  overrides: {}
+#   q1_direct_rewrite: "..."
+
 judge:
   backend: jev        # jev | replay
+  # Where the replay backend reads recorded answers from, relative to this file.
+  replay_path: replay.json
   concurrency: 16
   max_retries: 2
   timeout_ms: 20000

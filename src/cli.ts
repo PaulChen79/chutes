@@ -3,6 +3,7 @@ import { validateConfig } from "./commands/config.js";
 import { detectCommand } from "./commands/detect.js";
 import { init } from "./commands/init.js";
 import { reportCommand } from "./commands/report.js";
+import { scanCommand } from "./commands/scan.js";
 import { DEFAULT_MIGRATION } from "./paths.js";
 import { version } from "./version.js";
 
@@ -52,6 +53,22 @@ program
   .action(async (options: { migration: string }) => {
     await detectCommand(process.cwd(), options.migration);
   });
+
+program
+  .command("scan")
+  .description("Classify every matched file into a Lane and write the Plan")
+  .option("-m, --migration <name>", "Migration name", DEFAULT_MIGRATION)
+  .option("-f, --force", "Discard an existing Plan instead of refusing to overwrite it")
+  .option("--print-state [path]", "Print what would be sent to the Judge for one file, and stop")
+  .action(
+    async (options: { migration: string; force?: boolean; printState?: string | boolean }) => {
+      await scanCommand(process.cwd(), {
+        migration: options.migration,
+        force: options.force,
+        printState: options.printState,
+      });
+    },
+  );
 
 program.parseAsync().catch((error: unknown) => {
   process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);

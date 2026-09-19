@@ -88,11 +88,11 @@ uncalibrated.
 
 | Working | Not yet |
 | --- | --- |
-| `chutes init` | `chutes scan` (classification) |
-| `chutes init --report` | `chutes status` and the Plan |
-| `chutes detect --dry-run` | Waves and scheduling |
-| `chutes config validate` | Incremental rescan |
-| | Calibration |
+| `chutes init` | `chutes status` and `PLAN.md` |
+| `chutes init --report` | The real Judge backend |
+| `chutes detect --dry-run` | Incremental rescan |
+| `chutes config validate` | Waves and scheduling |
+| `chutes scan` (replay Judge only) | Calibration |
 
 ## Getting started
 
@@ -105,6 +105,9 @@ npx chutes init
 
 # Check your Detect Rules match what you expect, without contacting the Judge.
 npx chutes detect --dry-run
+
+# See exactly what would be sent to the Judge for one file. Sends nothing.
+npx chutes scan --print-state src/some/file.ts
 ```
 
 Add `--json` to `init --report` when a coding agent, rather than a person, is

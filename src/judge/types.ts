@@ -67,6 +67,14 @@ export interface JudgeResponse {
 
 export interface Judge {
   readonly backend: string;
+  /**
+   * The model this Judge will use, known before any question is asked.
+   *
+   * Up front rather than reported per answer, because the Config Fingerprint
+   * has to be computable before the first request: it is what decides
+   * whether an existing Plan can be reused at all.
+   */
+  readonly model: string | undefined;
   ask(request: JudgeRequest): Promise<JudgeResponse>;
 }
 

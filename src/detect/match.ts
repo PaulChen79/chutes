@@ -23,7 +23,13 @@ export interface FileMatches {
   shown: number;
 }
 
-/** Lines of surrounding source shown either side of a matched line. */
+/**
+ * Lines of surrounding source shown either side of a matched line.
+ *
+ * The default for `state.context_lines`, and the value `detect --dry-run`
+ * renders with. One constant and one extraction, so the context a reader
+ * checks in `detect` is the context the Judge is later shown.
+ */
 export const CONTEXT_LINES = 3;
 
 /**
@@ -60,6 +66,7 @@ export function matchLines(
   lines: string[],
   rules: CompiledRule[],
   max: number,
+  contextLines: number = CONTEXT_LINES,
 ): Omit<FileMatches, "path"> {
   const found: Match[] = [];
 
@@ -70,7 +77,7 @@ export function matchLines(
         ruleId: rule.id,
         line: index + 1,
         text,
-        context: lines.slice(Math.max(0, index - CONTEXT_LINES), index + CONTEXT_LINES + 1),
+        context: lines.slice(Math.max(0, index - contextLines), index + contextLines + 1),
       });
     }
   }
