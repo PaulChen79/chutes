@@ -1,6 +1,6 @@
 {
   "name": "chutes",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Per-file triage for large refactors: sort every file into mechanical, judgment, or redesign with calibrated confidence.",
   "license": "MIT",
   "author": "Paul Chen",
