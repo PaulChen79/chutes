@@ -56,7 +56,7 @@ export class ReplayJudge implements Judge {
     private readonly source: string,
   ) {}
 
-  static async load(cwd: string, replayPath: string): Promise<ReplayJudge> {
+  static async load(cwd: string, replayPath: string, shownAs = replayPath): Promise<ReplayJudge> {
     const full = isAbsolute(replayPath) ? replayPath : resolve(cwd, replayPath);
 
     let raw: string;
@@ -91,7 +91,10 @@ export class ReplayJudge implements Judge {
     return new ReplayJudge(
       new Map(Object.entries(result.data.answers)),
       result.data.model,
-      replayPath,
+      // The name from the configuration, not the resolved absolute path:
+      // this string reaches last_error, and last_error reaches the
+      // committed PLAN.md, which must not differ per machine.
+      shownAs,
     );
   }
 

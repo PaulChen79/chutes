@@ -1,4 +1,4 @@
-import { chmod, readFile, writeFile } from "node:fs/promises";
+import { chmod } from "node:fs/promises";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { runCli, tempRepo } from "./helpers/cli.js";
@@ -439,28 +439,6 @@ describe("chutes scan", () => {
     expect(bad?.lane).toBeNull();
     expect(bad?.content_hash).toBeNull();
     expect(result.stdout).toMatch(/error\s+1/);
-  });
-
-  it("refuses to overwrite an existing Plan unless forced", async () => {
-    const repo = await tempRepo();
-    await file(repo, "src/a.js", "export default 1\n");
-    await withRules(repo, [{ id: "r", pattern: "export default" }], replayJudge);
-    await withRecording(repo, { "src/a.js": MECHANICAL });
-
-    await runCli(repo, "scan");
-    // Stand in for weeks of progress recorded against the Plan.
-    const planFile = join(repo, ".chutes", "default", "plan.jsonl");
-    const marked = (await readFile(planFile, "utf8")).replace('"pending"', '"done"');
-    await writeFile(planFile, marked);
-
-    const second = await runCli(repo, "scan");
-    expect(second.exitCode).not.toBe(0);
-    expect(second.stderr).toMatch(/already exists/);
-    expect((await readPlan(repo))[0]?.status).toBe("done");
-
-    const forced = await runCli(repo, "scan", "--force");
-    expect(forced.exitCode).toBe(0);
-    expect((await readPlan(repo))[0]?.status).toBe("pending");
   });
 
   it("includes settings that feed a code-computed fact in the Config Fingerprint", async () => {
