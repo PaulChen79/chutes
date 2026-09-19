@@ -58,7 +58,7 @@ export interface PlanRecord {
 /** Serialise a Plan as JSONL, one record per line, in stable path order. */
 export function renderPlan(records: PlanRecord[]): string {
   const sorted = [...records].sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
-  return sorted.map((record) => JSON.stringify(orderKeys(record))).join("\n") + "\n";
+  return `${sorted.map((record) => JSON.stringify(orderKeys(record))).join("\n")}\n`;
 }
 
 /**

@@ -482,14 +482,14 @@ describe("chutes scan", () => {
     await file(
       repo,
       "src/cart.js",
-      [
+      `${[
         "import { total } from './math.js'",
         "import helper from './helper.js'",
         "export function addItem(item) {",
         "  return total(item)",
         "}",
         "export default addItem",
-      ].join("\n") + "\n",
+      ].join("\n")}\n`,
     );
     await file(repo, "src/math.js", "export const total = 1\n");
     await file(repo, "src/helper.js", "export default 2\n");
